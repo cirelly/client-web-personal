@@ -43,6 +43,7 @@ export function updateMenuOrderApi(token, menuId, data){
 
 
 export function activateMenuApi(token, menuId, status){
+   
     const url = `${basePath}/activate-menu/${menuId}`;
     const params = {
         method: "PUT",
@@ -50,7 +51,7 @@ export function activateMenuApi(token, menuId, status){
             "Content-Type": "application/json",
             "Authorization": token
         },
-        active: status
+        body: JSON.stringify({active: status})
     };
 
     return fetch(url, params).then(response => {
@@ -58,6 +59,6 @@ export function activateMenuApi(token, menuId, status){
     }).then(result => {
         return result.message;
     }).catch(err => {
-        return err;
+        console.log(err);
     })
 }

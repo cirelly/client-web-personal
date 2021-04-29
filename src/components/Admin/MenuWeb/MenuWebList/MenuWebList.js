@@ -44,6 +44,7 @@ export default function MenuWebList(props){
 
     const activateMenu = (menu, status) => {
         const token = getAccessToken();
+        
         activateMenuApi(token, menu._id, status).then(response => {
             notification['success']({
                 message: response
