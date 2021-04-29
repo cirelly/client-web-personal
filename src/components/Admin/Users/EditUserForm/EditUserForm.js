@@ -1,29 +1,86 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Form, Avatar, Select, Button, Input, Row, Col } from "antd";
+import { Form, Avatar, Select, Button, Input, Row, Col, notification } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useDropzone } from "react-dropzone";
 import NoAvatar from "../../../../assets/img/png/no-avatar.png";
+import {getAvatarApi, uploadAvatarApi, updateUserApi} from '../../../../api/user'
+import {getAccessToken} from '../../../../api/auth'
 import "./EditUserForm.scss";
 
 export default function EditUserForm(props) {
-  const { user } = props;
+  const { user, setIsVisible, setReloadUsers } = props;
   const [avatar, setAvatar] = useState(null);
-  const [userData, setUserData] = useState({
-    name: user.name,
-    lastname: user.lastname,
-    email: user.email,
-    role: user.role,
-    avatar: user.avatar,
-  });
+  const [userData, setUserData] = useState({});
   useEffect(() => {
     if (avatar) {
-      setUserData({ ...userData, avatar });
+      setUserData({ ...userData, avatar: avatar.file });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatar]);
+  useEffect(() => {
+    setUserData({
+      name: user.name,
+      lastname: user.lastname,
+      email: user.email,
+      role: user.role,
+      avatar: user.avatar,
+    })
+  }, [user])
+  useEffect(() => {
+    if(user.avatar){
+      getAvatarApi(user.avatar).then(response => {
+        setAvatar(response)
+      })
+    }else {
+      setAvatar(null);
+    }
+  }, [user])
   const updateUser = (e) => {
     e.preventDefault();
-    console.log(userData);
+    const token = getAccessToken();
+    let userUpdate = userData;
+    if(userUpdate.password || userUpdate.repeatPassword){
+      if(userUpdate.password !== userUpdate.repeatPassword){
+        notification["error"]({
+          message: "Password do not match."
+        })
+        return;
+      }else {
+        delete userUpdate.repeatPassword
+        console.log(userUpdate);
+      }
+    
+    }
+    if(!userUpdate.name || !userUpdate.lastname || !userUpdate.email){
+      notification["error"]({
+        message: "Name, Last Name and Email is required."
+      })
+      return;
+    }
+    if(typeof userUpdate.avatar === "object"){
+      uploadAvatarApi(token, userUpdate.avatar, userUpdate._id).then(response => {
+        userUpdate.avatar = response.avatarName;
+        updateUserApi(token, userUpdate, user._id).then(result => {
+          notification["success"]({
+            message: result.message
+          });
+        setUserData({...userData, password:'', repeatPassword:''})
+        setIsVisible(false);
+        setReloadUsers(true);
+        })
+      })
+    }else {
+      updateUserApi(token, userUpdate, user._id).then(result => {
+        notification["success"]({
+          message: result.message
+        });
+        setUserData({...userData, password:'', repeatPassword:''})
+        setIsVisible(false);
+        setReloadUsers(true);
+
+      })
+      
+    }
   };
 
   return (
@@ -40,6 +97,20 @@ export default function EditUserForm(props) {
 
 function UploadAvatar(props) {
   const { avatar, setAvatar } = props;
+  const [avatarUrl, setAvatarUrl] = useState(null);
+
+  useEffect(() => {
+    if(avatar){
+      if(avatar.preview){
+        setAvatarUrl(avatar.preview);
+      }else {
+        setAvatarUrl(avatar)
+      }
+    }else {
+      setAvatarUrl(null)
+    }
+  }, [avatar])
+
   const onDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -59,7 +130,7 @@ function UploadAvatar(props) {
       {isDragActive ? (
         <Avatar size={150} src={NoAvatar} />
       ) : (
-        <Avatar size={150} src={avatar ? avatar.preview : NoAvatar} />
+        <Avatar size={150} src={avatarUrl ? avatarUrl : NoAvatar} />
       )}
     </div>
   );
@@ -77,7 +148,7 @@ function EditForm(props) {
             <Input
               prefix={<UserOutlined />}
               placeholder="Name"
-              defaultValue={userData.name}
+              value={userData.name}
               onChange={(e) =>
                 setUserData({ ...userData, name: e.target.value })
               }
@@ -89,7 +160,7 @@ function EditForm(props) {
             <Input
               prefix={<UserOutlined />}
               placeholder="Last Name"
-              defaultValue={userData.lastname}
+              value={userData.lastname}
               onChange={(e) =>
                 setUserData({ ...userData, lastname: e.target.value })
               }
@@ -103,7 +174,7 @@ function EditForm(props) {
             <Input
               prefix={<UserOutlined />}
               placeholder="Email"
-              defaultValue={userData.email}
+              value={userData.email}
               onChange={(e) =>
                 setUserData({ ...userData, email: e.target.value })
               }
@@ -115,7 +186,7 @@ function EditForm(props) {
             <Select
               placeholder="Selecciona  Role"
               onChange={(e) => setUserData({ ...userData, role: e })}
-              defaultValue={userData.role}
+              value={userData.role}
             >
               <Option value="admin"> Admin </Option>
               <Option value="editor"> Editor </Option>
@@ -131,6 +202,7 @@ function EditForm(props) {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Password"
+              value={userData.password}
               onChange={(e) => {
                 setUserData({ ...userData, password: e.target.value });
               }}
@@ -143,6 +215,7 @@ function EditForm(props) {
               prefix={<LockOutlined />}
               type="password"
               placeholder="Repeat Password"
+              value={userData.repeatPassword}
               onChange={(e) => {
                 setUserData({ ...userData, repeatPassword: e.target.value });
               }}

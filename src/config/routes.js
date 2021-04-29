@@ -10,7 +10,7 @@ import AdminUsers from '../pages/Admin/Users'
 import Home from '../pages/Home'
 import Contact from '../pages/Contact'
 import Error404 from '../pages/Error404'
-
+import AdminMenuWeb from '../pages/Admin/MenuWeb/MenuWeb'
 
 const routes = [
     {
@@ -31,6 +31,11 @@ const routes = [
             {
                 path: "/admin/users",
                 component: AdminUsers,
+                exact: true
+            },
+            {
+                path: "/admin/menu",
+                component: AdminMenuWeb,
                 exact: true
             },
             {

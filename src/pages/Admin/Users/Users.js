@@ -8,16 +8,17 @@ export default function Users(){
     const [usersActive, setUsersActive] = useState([]);
     const [usersInactive, setUsersInactive] = useState([]);
     const token = getAccessToken();
-    
+    const [reloadUsers, setReloadUsers] = useState(false)
     useEffect(()=> {
         getUsersActive(token, true)
         .then(response => setUsersActive(response.users));
         getUsersActive(token, false)
-        .then(response => setUsersInactive(response.users))
-    }, [token])
+        .then(response => setUsersInactive(response.users));
+        setReloadUsers(false)
+    }, [token, reloadUsers])
     return(
         <div>
-            <ListUsers usersActive={usersActive} usersInactive={usersInactive}/>
+            <ListUsers usersActive={usersActive} setReloadUsers={setReloadUsers} usersInactive={usersInactive}/>
         </div>
     )
 }
