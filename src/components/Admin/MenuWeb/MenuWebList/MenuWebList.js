@@ -8,27 +8,31 @@ import {
 import {Switch, List, Button, Icon, Modal as ModalAntd, notification, message} from 'antd'
 import Modal from '../../../Modal'
 import DragSortableList from 'react-drag-sortable'
-import {updateMenuOrderApi, activateMenuApi} from '../../../../api/menu'
+import {updateMenuOrderApi, activateMenuApi, deleteMenuApi} from '../../../../api/menu'
 import {getAccessToken} from '../../../../api/auth'
+import AddMenuWebForm from '../AddMenuWebForm'
+import EditMenuForm from '../EditMenuForm'
 import './MenuWebList.scss'
 
 const {confirm} = ModalAntd;
 export default function MenuWebList(props){
 
-    const {menu, setReloadMenuWeb} = props;
+    const {menu, setreloadMenuWeb} = props;
     const [isVisibleModal, setIsVisibleModal] = useState(false)
     const [modalTitle, setModalTitle] = useState('');
     const [listItems, setListItems] = useState([]);
     const [modalContent, setModalContent] = useState(null);
+    
     useEffect(() => {
         const listItemsArray =[];
 
         menu.forEach(item => {
             listItemsArray.push({
-            content: (<MenuItem item={item} activateMenu={activateMenu}/>)
+            content: (<MenuItem item={item} showDeleteConfirm={showDeleteConfirm} editMenuWebModal={editMenuWebModal} activateMenu={activateMenu}/>)
             })
         });
         setListItems(listItemsArray)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [menu])
 
    
@@ -51,16 +55,66 @@ export default function MenuWebList(props){
             });
         })
     }
+    const addMenuWebModal = () => {
+            setIsVisibleModal(true);
+            setModalTitle('Crear nuevo menu');
+            setModalContent(
+                <AddMenuWebForm 
+                    setIsVisibleModal={setIsVisibleModal}
+                    setreloadMenuWeb={setreloadMenuWeb}
+                
+                />
+            )
+    }
 
+    const editMenuWebModal = menu => {
+        setIsVisibleModal(true);
+        setModalTitle(`Editing menu: ${menu.title}`);
+        setModalContent(
+            <EditMenuForm 
+                setIsVisibleModal={setIsVisibleModal}
+                setreloadMenuWeb={setreloadMenuWeb}
+                menu={menu}
+            />
+        )
+    }
+
+    const showDeleteConfirm = (menu) =>{
+        
+        const accessToken = getAccessToken();
+        confirm({
+          title: "Delete menu ",
+          content: `Are you sure to eliminate the menu: ${menu.title}?`,
+          okText: "Yes, delete",
+          okType: "danger",
+          cancelText: "Cancel",
+          onOk(){
+            deleteMenuApi(accessToken, menu._id).then(response => {
+              notification['success']({
+                message: response,
+              })
+              setreloadMenuWeb(true)
+            }).catch(err => {
+              notification['error']({
+                message: err
+              })
+            })
+          }
+        })
+      }
     return(
       <div className="menu-web-list">
           <div className="menu-web-list__header">
-            <Button type="primary">Menu</Button>
+            <Button type="primary" onClick={addMenuWebModal}>Crear Menu</Button>
           </div>
 
           <div className="menu-web-list__items">
             <DragSortableList items={listItems} onSort={onSort} type="vertical" />
           </div>
+
+          <Modal title={modalTitle} isVisible={isVisibleModal} setIsVisible={setIsVisibleModal}>
+              {modalContent}
+          </Modal>
       </div>
     )
 }
@@ -68,15 +122,15 @@ export default function MenuWebList(props){
 
 
 function MenuItem(props){
-    const{item, activateMenu}= props;
+    const{item, activateMenu, editMenuWebModal, showDeleteConfirm}= props;
 
     return (
     <List.Item actions={[
         <Switch defaultChecked={item.active} onChange={e=> activateMenu(item, e)} />,
-        <Button type="primary">
+        <Button type="primary" onClick={() => editMenuWebModal(item)}>
             <CheckOutlined />
         </Button>,
-        <Button type="danger">
+        <Button type="danger" onClick={() => showDeleteConfirm(item)}>
             <UserDeleteOutlined />
         </Button>
     ]}>
