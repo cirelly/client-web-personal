@@ -12,19 +12,20 @@ export default function LayoutBasic(props){
 
 
     return (
+        <>
         <Row>
             <Col md={4} />
             <Col md={16}>
-            <MenuTop />
-
-            <LoadRoutes routes={routes} />
-                
-                <Footer>
-                    footer
-                </Footer>
+                <MenuTop />   
             </Col>
-            <Col md={4}/>
+            <Col md={4} />
         </Row>
+        <LoadRoutes routes={routes} />
+                
+        <Footer>
+            footer
+        </Footer>
+        </>
     )
 }
 

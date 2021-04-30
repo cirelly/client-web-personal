@@ -11,7 +11,7 @@ import Home from '../pages/Home'
 import Contact from '../pages/Contact'
 import Error404 from '../pages/Error404'
 import AdminMenuWeb from '../pages/Admin/MenuWeb/MenuWeb'
-
+import Courses from '../pages/Courses'
 const routes = [
     {
         path: "/admin",
@@ -56,6 +56,11 @@ const routes = [
             {
                 path: "/contact",
                 component: Contact,
+                exact: true
+            },
+            {
+                path: "/courses",
+                component: Courses,
                 exact: true
             },
             {
