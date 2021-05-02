@@ -22,23 +22,23 @@ const HomeCourses = () => {
                         <CardCourse  image={javascript} title="JavaScript" subtitle="Intermedio - JavaScript" link="https://facebook.com" />
                     </Col>
                     <Col md={6}>
-                        <CardCourse  image={cssGrid} title="CSS GRID" subtitle="Intermedio - Css Grid" link="https://facebook.com" />
+                        <CardCourse  image={cssGrid} title="CSS GRID" subtitle="Intermedio - Css Grid Complete" link="https://facebook.com" />
                     </Col>
                     <Col md={6}>
                         <CardCourse  image={reactJsHooks} title="JavaScript" subtitle="Intermedio - ReactJs/Hooks" link="https://facebook.com" />
                     </Col>
                     <Col md={6}>
-                        <CardCourse  image={reactNative} title="JavaScript" subtitle="Basico - React Native" link="https://facebook.com" />
+                        <CardCourse  image={reactNative} title="JavaScript" subtitle="Basico/Intermedio - React Native" link="https://facebook.com" />
                     </Col>
                 </Row>
                 <Row className="row-courses">
                 <Col md={6}>
-                    <CardCourse  image={prestashop} title="JavaScript" subtitle="Basico - PrestaShop" link="https://facebook.com" />
+                    <CardCourse  image={prestashop} title="JavaScript" subtitle="Basico/Intermedio - PrestaShop" link="https://facebook.com" />
                 </Col>
                 <Col md={6} />
                 <Col md={6} />
                 <Col md={6}>
-                    <CardCourse  image={wordpress} title="JavaScript" subtitle="Basico - WordPress" link="https://facebook.com" />
+                    <CardCourse  image={wordpress} title="JavaScript" subtitle="Basico/Intermedio - WordPress" link="https://facebook.com" />
                 </Col>
                 </Row>
             </Col>
