@@ -3,12 +3,12 @@ import {Layout, Row, Col} from 'antd'
 import {Route, Switch} from 'react-router-dom'
 import './LayoutBasic.scss'
 import MenuTop from '../components/Web/MenuTop'
-
+import Footer  from '../components/Web/Footer'
 
 
 export default function LayoutBasic(props){
     const {routes} = props;
-    const {Content, Footer} = Layout;
+    const {Content, } = Layout;
 
 
     return (
@@ -21,10 +21,8 @@ export default function LayoutBasic(props){
             <Col md={4} />
         </Row>
         <LoadRoutes routes={routes} />
-                
-        <Footer>
-            footer
-        </Footer>
+              <Footer />  
+       
         </>
     )
 }
