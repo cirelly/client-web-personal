@@ -17,7 +17,7 @@ const AddEditCourseForm = (props) => {
 
     useEffect(() => {
        
-       course && setCourseData(course)
+       course ? setCourseData(course) : setCourseData({})
     }, [course])
 
 
