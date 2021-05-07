@@ -1,1 +1,1 @@
-export const basePath = "http://localhost:5000/api"
+export const basePath = "https://imcirelly-serv.herokuapp.com/api"
