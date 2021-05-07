@@ -109,9 +109,6 @@ import "./CoursesList.scss"
             <ReactDragSortableList items={listCourses} onSort={onSort} type="vertical"/>
            </div>
 
-           <Modal title={modalTitle} isVisible={isVisibleModal} setIsVisible={setIsVisibleModal}>
-               {modalContent}
-           </Modal>
         </div>
     )
 }

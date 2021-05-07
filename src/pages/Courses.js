@@ -3,6 +3,7 @@ import {Row, Col, Spin, notification} from 'antd'
 import {getCoursesApi} from '../api/courses'
 import PresentationCourses from '../components/Web/Courses/PresentationCourses';
 import CoursesList from '../components/Web/Courses/CoursesList'
+import {Helmet} from 'react-helmet'
  const Courses = () => {
 
     const [courses, setCourses] = useState(null)
@@ -22,6 +23,12 @@ import CoursesList from '../components/Web/Courses/CoursesList'
         })
     }, [])
     return (
+        <>
+        <Helmet>
+            <title>Cursos de programacion | Im Cirelly</title>
+            <meta name="description" content="Courses | Courses Im Cirelly" data-react-helmet="true"></meta>
+
+        </Helmet>
         <Row className="courses">
 
             <Col md={4} />
@@ -42,6 +49,7 @@ import CoursesList from '../components/Web/Courses/CoursesList'
             <Col md={4} />
             
         </Row>
+        </>
     )
 }
 export default Courses;
